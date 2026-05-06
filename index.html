@@ -7,6 +7,7 @@
   <meta property="og:title" content="Te saqué una foto en Varsovia" />
   <meta property="og:description" content="Mira cómo quedó. Es tuya." />
   <meta property="og:image" content="assets/og-preview.jpg" />
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
@@ -309,6 +310,23 @@
       padding: 8px 0;
     }
 
+
+    /* ── TALLY EMBED ── */
+    .tally-wrap {
+      margin-top: 1.5rem;
+      background: var(--bg3);
+      border: 0.5px solid var(--line2);
+      border-radius: 3px;
+      padding: 8px;
+      min-height: 380px;
+    }
+    .tally-wrap iframe {
+      width: 100%;
+      height: 380px;
+      border: none;
+      background: transparent;
+      display: block;
+    }
     /* ── DONATE PANEL ── */
     .donate-block {
       padding: 1.75rem 1.5rem 1rem;
@@ -437,7 +455,7 @@ const SESSION = {
   photographer: "@tu_usuario",           // TU usuario de Instagram
   ig_url: "https://instagram.com/tu_usuario",
   phone_blik: "+48 XXX XXX XXX",         // Tu número para BLIK
-  tally_form_url: "https://tally.so/r/XXXXXXX", // URL de tu form Tally (ver README)
+  tally_form_url: "https://tally.so/r/rj2ZbN", // URL de tu form Tally (Faces of Kraków)
   photos: [
     // FOTOS DESBLOQUEADAS: URL directa de Google Drive (ver README para obtenerla)
     { id: 1, unlocked: true,  src: "https://drive.google.com/uc?export=view&id=DRIVE_FILE_ID_1", thumb: "https://drive.google.com/uc?export=view&id=DRIVE_FILE_ID_1" },
@@ -492,19 +510,22 @@ const SESSION = {
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <div class="step-text"><strong>Publícala</strong> en tu historia de Instagram. Etiqueta <strong id="unlock-ig"></strong> — lo que escribas es tuyo.</div>
+        <div class="step-text"><strong>Publícala</strong> en tu historia de Instagram. Etiqueta <strong id="unlock-ig"></strong>.</div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-text"><strong>Pega el link</strong> de tu historia aquí abajo. En minutos recibes acceso al resto de las fotos.</div>
+        <div class="step-text"><strong>Pega el link</strong> de tu historia aquí abajo. En minutos recibes acceso al resto.</div>
       </div>
     </div>
-    <div class="input-row">
-      <input class="story-input" type="url" id="story-link" placeholder="instagram.com/stories/tu_usuario/..." />
-      <button class="btn-send" onclick="submitStory()">enviar ↗</button>
+    <!-- Tally form embebido -->
+    <div class="tally-wrap">
+      <iframe id="tally-iframe"
+        src=""
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Comparte tu historia"></iframe>
     </div>
-    <div class="success-msg" id="success-msg">✓ recibido — te escribo en breve por instagram con el acceso completo.</div>
-    <div class="error-msg" id="error-msg">↳ pega el link completo de la historia, por favor.</div>
   </div>
 </div>
 
@@ -603,37 +624,35 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    // Cargar iframe Tally solo cuando se abre el tab "unlock"
+    if (tab.dataset.tab === 'unlock') loadTallyIframe();
   });
 });
 
-// ── SUBMIT STORY ──
-function submitStory() {
-  const link = document.getElementById('story-link').value.trim();
-  const successEl = document.getElementById('success-msg');
-  const errorEl = document.getElementById('error-msg');
-  successEl.style.display = 'none';
-  errorEl.style.display = 'none';
+// ── LOAD TALLY IFRAME ──
+// El iframe se carga solo cuando el usuario abre el tab "desbloquear",
+// para evitar peticiones innecesarias al inicio.
+function loadTallyIframe() {
+  const iframe = document.getElementById('tally-iframe');
+  if (!iframe || iframe.dataset.loaded === 'true') return;
 
-  if (!link || !link.includes('instagram')) {
-    errorEl.style.display = 'block';
-    return;
-  }
+  // Convertir URL de tally.so/r/XXX a tally.so/embed/XXX
+  const baseUrl = SESSION.tally_form_url.replace('/r/', '/embed/');
 
-  // Enviar al form de Tally (o cualquier endpoint)
-  const formUrl = SESSION.tally_form_url;
-  const name = SESSION.name;
-  const storyLink = encodeURIComponent(link);
-  const photographer = SESSION.photographer;
+  // Pre-llenar campos via URL parameters (Tally hidden fields)
+  const params = new URLSearchParams({
+    photographer: SESSION.photographer,
+    session_name: SESSION.name,
+    session_date: SESSION.date,
+    session_location: SESSION.location,
+    alignLeft: '1',
+    hideTitle: '1',
+    transparentBackground: '1',
+    dynamicHeight: '1'
+  });
 
-  // Abre Tally con los parámetros prellenados (o usa fetch para un form silencioso)
-  const fullUrl = `${formUrl}?name=${encodeURIComponent(name)}&story=${storyLink}&photographer=${encodeURIComponent(photographer)}`;
-
-  // Envío silencioso (sin abrir ventana)
-  fetch(fullUrl, { mode: 'no-cors' }).catch(() => {});
-
-  // UX: mostrar confirmación inmediata
-  successEl.style.display = 'block';
-  document.getElementById('story-link').value = '';
+  iframe.src = `${baseUrl}?${params.toString()}`;
+  iframe.dataset.loaded = 'true';
 }
 
 // ── LIGHTBOX ──
@@ -653,5 +672,8 @@ document.getElementById('lightbox').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeLightbox();
 });
 </script>
+
+<!-- Tally embed auto-resize script -->
+<script async src="https://tally.so/widgets/embed.js"></script>
 </body>
 </html>
