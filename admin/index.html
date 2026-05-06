@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Panel de sesiones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080808; --bg2: #0f0f0f; --bg3: #161616;
+      --line: #1e1e1e; --line2: #252525;
+      --text: #e8e2d9; --muted: #555; --dim: #333;
+      --accent: #c8b99a; --white: #f5f0ea;
+      --green: #4a8f5a; --red: #8f4a4a; --amber: #8f7a4a;
+    }
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      max-width: 680px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding-bottom: 3rem;
+    }
+    /* HEADER */
+    .admin-header {
+      padding: 1.75rem 1.5rem 1.25rem;
+      border-bottom: 0.5px solid var(--line);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .admin-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+    }
+    .admin-title em { font-style: italic; color: var(--accent); }
+    .admin-meta { font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+
+    /* STATS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-bottom: 0.5px solid var(--line);
+    }
+    .stat {
+      padding: 1rem 1.25rem;
+      border-right: 0.5px solid var(--line);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-lbl { font-size: 9px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+
+    /* NEW SESSION */
+    .section-label {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 1.25rem 1.5rem 0.75rem;
+    }
+    .new-form {
+      padding: 0 1.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .new-form .full { grid-column: 1 / -1; }
+    .field-label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .field-wrap { display: flex; flex-direction: column; }
+    input[type="text"], input[type="number"], select {
+      background: var(--bg3);
+      border: 0.5px solid var(--line2);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 9px 11px;
+      border-radius: 2px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { border-color: var(--muted); }
+    input::placeholder { color: var(--dim); }
+    select option { background: var(--bg3); }
+
+    .btn-generate {
+      grid-column: 1 / -1;
+      background: var(--white);
+      border: none;
+      color: #000;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 12px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .btn-generate:hover { background: #fff; }
+
+    /* OUTPUT */
+    .output-block {
+      margin: 0 1.5rem;
+      background: var(--bg3);
+      border: 0.5px solid var(--line2);
+      border-radius: 2px;
+      padding: 1rem 1.25rem;
+      display: none;
+    }
+    .output-block.visible { display: block; }
+    .output-title {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .output-url {
+      font-size: 12px;
+      color: var(--accent);
+      word-break: break-all;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .output-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-sm {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: 7px 14px;
+      border-radius: 2px;
+      cursor: pointer;
+      border: 0.5px solid var(--line2);
+      background: transparent;
+      color: var(--accent);
+      transition: border-color 0.2s;
+    }
+    .btn-sm:hover { border-color: var(--muted); }
+    .btn-sm.primary { background: var(--bg2); }
+
+    /* QR */
+    #qr-container {
+      margin-top: 12px;
+      text-align: center;
+    }
+    #qr-container canvas, #qr-container img {
+      border: 4px solid var(--white);
+      border-radius: 2px;
+    }
+
+    /* SESSIONS LIST */
+    .sessions-list {
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .session-row {
+      background: var(--bg2);
+      border: 0.5px solid var(--line2);
+      border-radius: 2px;
+      padding: 0.9rem 1.1rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .session-name { font-size: 13px; color: var(--white); margin-bottom: 3px; }
+    .session-meta { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; }
+    .session-badge {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      padding: 3px 10px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .badge-pending { background: #1a1610; color: var(--amber); border: 0.5px solid #3a3010; }
+    .badge-tagged  { background: #101a14; color: var(--green); border: 0.5px solid #103020; }
+    .badge-new     { background: #160f0f; color: var(--red);   border: 0.5px solid #301010; }
+    .session-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-xs {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      padding: 5px 11px;
+      border-radius: 2px;
+      cursor: pointer;
+      border: 0.5px solid var(--line2);
+      background: transparent;
+      color: var(--muted);
+      transition: color 0.2s, border-color 0.2s;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .btn-xs:hover { color: var(--text); border-color: var(--muted); }
+
+    /* INSTRUCTIONS */
+    .instructions {
+      margin: 1.5rem 1.5rem 0;
+      border: 0.5px solid var(--line2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .instr-header {
+      padding: 0.75rem 1rem;
+      background: var(--bg3);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .instr-body {
+      padding: 1rem;
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.8;
+      display: none;
+    }
+    .instr-body.open { display: block; }
+    .instr-body strong { color: var(--accent); font-weight: 400; }
+    .instr-body code {
+      background: var(--bg3);
+      padding: 1px 5px;
+      border-radius: 2px;
+      font-size: 10px;
+      color: #9a8a78;
+    }
+    .instr-body ol { padding-left: 1.2rem; }
+    .instr-body li { margin-bottom: 6px; }
+    .divider {
+      height: 0.5px;
+      background: var(--line);
+      margin: 1.5rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div>
+    <div class="admin-title"><em>admin</em> · sesiones</div>
+    <div class="admin-meta" style="margin-top:6px" id="admin-date"></div>
+  </div>
+  <div class="admin-meta" id="admin-ig"></div>
+</div>
+
+<!-- CONFIG -->
+<script>
+const ADMIN_CONFIG = {
+  photographer: "@tu_usuario",
+  base_url: "https://tu-proyecto.vercel.app",
+  phone_blik: "+48 XXX XXX XXX",
+};
+
+// Sesiones guardadas localmente (en producción usa un Google Sheet o Notion)
+let sessions = JSON.parse(localStorage.getItem('photo_sessions') || '[]');
+
+function saveSessions() {
+  localStorage.setItem('photo_sessions', JSON.stringify(sessions));
+}
+</script>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat">
+    <div class="stat-val" id="stat-total">0</div>
+    <div class="stat-lbl">sesiones</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" id="stat-tagged">0</div>
+    <div class="stat-lbl">etiquetaron</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" id="stat-pending">0</div>
+    <div class="stat-lbl">pendientes</div>
+  </div>
+</div>
+
+<!-- NUEVA SESIÓN -->
+<div class="section-label">nueva sesión</div>
+<div class="new-form">
+  <div class="field-wrap">
+    <div class="field-label">nombre</div>
+    <input type="text" id="f-name" placeholder="Marta" />
+  </div>
+  <div class="field-wrap">
+    <div class="field-label">lugar</div>
+    <input type="text" id="f-location" placeholder="Łazienki, Varsovia" />
+  </div>
+  <div class="field-wrap full">
+    <div class="field-label">nota interna (opcional)</div>
+    <input type="text" id="f-note" placeholder="chica de sombrero rojo, cerca de la fuente..." />
+  </div>
+  <div class="field-wrap">
+    <div class="field-label">fotos desbloqueadas</div>
+    <input type="number" id="f-unlocked" value="2" min="1" max="10" />
+  </div>
+  <div class="field-wrap">
+    <div class="field-label">total de fotos</div>
+    <input type="number" id="f-total" value="8" min="1" max="20" />
+  </div>
+  <button class="btn-generate full" onclick="generateSession()">generar sesión + QR ↗</button>
+</div>
+
+<!-- OUTPUT -->
+<div class="output-block" id="output-block">
+  <div class="output-title">sesión generada</div>
+  <div class="output-url" id="output-url"></div>
+  <div class="output-actions">
+    <button class="btn-sm primary" onclick="copyUrl()">↯ copiar link</button>
+    <button class="btn-sm" onclick="downloadQR()">↓ descargar QR</button>
+    <button class="btn-sm" onclick="openUrl()">↗ abrir página</button>
+  </div>
+  <div id="qr-container"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SESIONES -->
+<div class="section-label">sesiones recientes</div>
+<div class="sessions-list" id="sessions-list">
+  <div style="font-size:10px; color:var(--dim); padding: 0 0 0.5rem;">
+    las sesiones que generes aparecen aquí.
+  </div>
+</div>
+
+<!-- INSTRUCCIONES -->
+<div class="instructions">
+  <div class="instr-header" onclick="toggleInstr(this)">
+    <span>cómo configurar el proyecto</span>
+    <span id="instr-toggle">+ ver</span>
+  </div>
+  <div class="instr-body" id="instr-body">
+    <ol>
+      <li><strong>Edita <code>index.html</code></strong> — en la sección <code>SESSION</code>, cambia <code>photographer</code>, <code>phone_blik</code> y <code>tally_form_url</code>.</li>
+      <li><strong>Google Drive:</strong> sube las fotos, dales acceso público, y copia el ID del archivo. La URL directa tiene el formato: <code>drive.google.com/uc?export=view&id=TU_ID</code></li>
+      <li><strong>Tally.so:</strong> crea un form con campos <code>name</code>, <code>story</code>, <code>photographer</code>. Activa notificaciones por email. Gratis.</li>
+      <li><strong>Vercel:</strong> conecta tu repositorio de GitHub y despliega. Cada carpeta <code>/sessions/marta-lazienki/</code> con su <code>index.html</code> es una URL automática.</li>
+      <li><strong>Para cada persona:</strong> duplica <code>index.html</code>, edita el objeto <code>SESSION</code>, guárdalo en <code>/sessions/nombre-lugar/index.html</code>.</li>
+      <li>Usa este <strong>panel admin</strong> para generar el QR y el link. Muéstralo en tu pantalla o imprímelo en tarjetas.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- QR LIB -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+document.getElementById('admin-date').textContent = new Date().toLocaleDateString('es-ES', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+document.getElementById('admin-ig').textContent = ADMIN_CONFIG.photographer;
+
+let currentUrl = '';
+
+function generateSession() {
+  const name = document.getElementById('f-name').value.trim();
+  const location = document.getElementById('f-location').value.trim();
+  const note = document.getElementById('f-note').value.trim();
+  const unlocked = parseInt(document.getElementById('f-unlocked').value);
+  const total = parseInt(document.getElementById('f-total').value);
+
+  if (!name) { alert('Ingresa el nombre de la persona.'); return; }
+
+  const slug = slugify(name) + '-' + slugify(location || 'sesion') + '-' + Date.now().toString(36);
+  const url = `${ADMIN_CONFIG.base_url}/sessions/${slug}/`;
+
+  const session = {
+    id: slug, name, location, note, unlocked, total,
+    url, date: new Date().toISOString(), status: 'new'
+  };
+  sessions.unshift(session);
+  saveSessions();
+
+  // Show output
+  currentUrl = url;
+  document.getElementById('output-url').textContent = url;
+  document.getElementById('output-block').classList.add('visible');
+
+  // Generate QR
+  const qrDiv = document.getElementById('qr-container');
+  qrDiv.innerHTML = '';
+  new QRCode(qrDiv, {
+    text: url,
+    width: 180, height: 180,
+    colorDark: '#080808',
+    colorLight: '#f5f0ea',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  renderSessions();
+}
+
+function slugify(str) {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function copyUrl() {
+  navigator.clipboard.writeText(currentUrl).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ copiado';
+    setTimeout(() => btn.textContent = '↯ copiar link', 1500);
+  });
+}
+
+function openUrl() { window.open(currentUrl, '_blank'); }
+
+function downloadQR() {
+  const canvas = document.querySelector('#qr-container canvas');
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = `qr-${currentUrl.split('/').slice(-2,-1)[0]}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+function renderSessions() {
+  const list = document.getElementById('sessions-list');
+  const total = sessions.length;
+  const tagged = sessions.filter(s => s.status === 'tagged').length;
+  const pending = sessions.filter(s => s.status === 'new').length;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-tagged').textContent = tagged;
+  document.getElementById('stat-pending').textContent = pending;
+
+  if (!sessions.length) {
+    list.innerHTML = '<div style="font-size:10px;color:var(--dim);padding:0 0 0.5rem">las sesiones que generes aparecen aquí.</div>';
+    return;
+  }
+
+  list.innerHTML = sessions.slice(0, 20).map(s => `
+    <div class="session-row">
+      <div>
+        <div class="session-name">${s.name}</div>
+        <div class="session-meta">${s.location || '—'} · ${new Date(s.date).toLocaleDateString('es-ES')} · ${s.unlocked}/${s.total} fotos</div>
+        ${s.note ? `<div class="session-meta" style="margin-top:2px;color:var(--dim)">${s.note}</div>` : ''}
+      </div>
+      <div class="session-badge badge-${s.status}">${statusLabel(s.status)}</div>
+      <div class="session-actions">
+        <a class="btn-xs" href="${s.url}" target="_blank">↗ abrir</a>
+        <button class="btn-xs" onclick="copySessionUrl('${s.url}', this)">copiar link</button>
+        <button class="btn-xs" onclick="markTagged('${s.id}')">✓ etiquetó</button>
+        <button class="btn-xs" onclick="deleteSession('${s.id}')">✕ borrar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function statusLabel(s) {
+  return s === 'tagged' ? 'etiquetó' : s === 'pending' ? 'pendiente' : 'nueva';
+}
+
+function copySessionUrl(url, btn) {
+  navigator.clipboard.writeText(url).then(() => {
+    btn.textContent = '✓ copiado';
+    setTimeout(() => btn.textContent = 'copiar link', 1500);
+  });
+}
+
+function markTagged(id) {
+  const s = sessions.find(s => s.id === id);
+  if (s) { s.status = s.status === 'tagged' ? 'new' : 'tagged'; saveSessions(); renderSessions(); }
+}
+
+function deleteSession(id) {
+  if (!confirm('¿Borrar esta sesión del historial?')) return;
+  sessions = sessions.filter(s => s.id !== id);
+  saveSessions();
+  renderSessions();
+}
+
+function toggleInstr(el) {
+  const body = document.getElementById('instr-body');
+  const toggle = document.getElementById('instr-toggle');
+  body.classList.toggle('open');
+  toggle.textContent = body.classList.contains('open') ? '− cerrar' : '+ ver';
+}
+
+renderSessions();
+</script>
+</body>
+</html>
