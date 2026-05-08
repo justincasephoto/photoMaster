@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Una foto para ti · @TU_USUARIO</title>
-  <meta property="og:title" content="Te saqué una foto en Varsovia" />
-  <meta property="og:description" content="Mira cómo quedó. Es tuya." />
+  <title>A photo for you · @justin.case.photo</title>
+  <meta property="og:title" content="I took a photo of you in Kraków" />
+  <meta property="og:description" content="See how it turned out. It's yours." />
   <meta property="og:image" content="assets/og-preview.jpg" />
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -449,12 +449,12 @@
 -->
 <script>
 const SESSION = {
-  name: "Krzysztof",
+  name: "Krzysztof Górkiewicz",
   date: "30.04.2026",
-  location: "Kraków, Birthday Party",
-  photographer: "@justincasephoto",
-  ig_url: "https://instagram.com/justincasephoto",
-  phone_blik: "+48 XXX XXX XXX",
+  location: "Cafe Szafe, Kraków",
+  photographer: "@justin.case.photo",
+  ig_url: "https://instagram.com/justin.case.photo",
+  phone_blik: "+48 514 625 902",
   tally_form_url: "https://tally.so/r/rj2ZbN",
   photos: [
     { id: 1, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy1.jpg" },
@@ -489,7 +489,7 @@ const SESSION = {
 <div class="hero">
   <div class="hero-meta fade" id="hero-meta"></div>
   <h1 class="hero-title fade"><span id="hero-name"></span>,<br><em>this is for you.</em></h1>
-  <p class="hero-sub fade">photography callejera · a moment in the city</p>
+  <p class="hero-sub fade">Candid photography · moments captured</p>
   <a class="ig-pill fade" id="ig-link" target="_blank" rel="noopener">
     <span class="ig-dot"></span>
     <span id="ig-handle"></span>
@@ -508,7 +508,7 @@ const SESSION = {
   <div class="gallery-label" id="gallery-label"></div>
   <div class="gallery-grid" id="gallery-grid"></div>
   <div class="gallery-footer">
-    <p>¿Te gustaron? Publica una en tu historia, etiqueta <strong id="footer-ig"></strong> y desbloquea las demás. Sin costo, solo un tag.</p>
+    <p>Like them? Post one on your story, tag <strong id="footer-ig"></strong> and unlock the rest. No cost, just a tag.</p>
   </div>
 </div>
 
@@ -520,7 +520,7 @@ const SESSION = {
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <div class="step-text"><strong>Download</strong> una de las fotos available en la gallery. Toca la foto y pulsa "downloadr".</div>
+        <div class="step-text"><strong>Download</strong> one of the available photos in the gallery. Tap the photo and press "download".</div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
@@ -538,7 +538,7 @@ const SESSION = {
         frameborder="0"
         marginheight="0"
         marginwidth="0"
-        title="Comparte tu historia"></iframe>
+        title="Share your story"></iframe>
     </div>
   </div>
 </div>
@@ -546,18 +546,18 @@ const SESSION = {
 <!-- ── PANEL: DONAR ── -->
 <div class="panel" id="panel-donate">
   <div class="donate-block">
-    <h2 class="panel-title">If you liked<br><em>the work.</em></h2>
-    <p class="panel-body">Street photography is independent work. A voluntary donation allows me to continue on the street with my camera. Any amount is welcome, none is mandatory.</p>
+    <h2 class="panel-title">If you liked<br><em>my work.</em></h2>
+    <p class="panel-body">Street and candid photography is independent work. A voluntary donation allows me to continue on the street with my camera. Any amount is welcome, none is mandatory.</p>
     <div class="blik-card">
       <div class="blik-left">
-        <div class="blik-label">donation via blik · polonia</div>
+        <div class="blik-label">donation via BLIK · Poland</div>
         <div class="blik-number" id="blik-number"></div>
       </div>
       <div class="blik-badge">blik</div>
     </div>
   </div>
   <div class="donate-note">
-    A donation + tag on your story gives you access to <strong>all photos</strong> de tu sesión. Gracias por support the work independiente.
+    A donation + tag on your story gives you access to <strong>all photos</strong> from your session. Thanks for supporting independent work.
   </div>
 </div>
 
@@ -569,11 +569,11 @@ const SESSION = {
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
-  <span class="lb-close" onclick="closeLightbox()">✕ cerrar</span>
+  <span class="lb-close" onclick="closeLightbox()">✕ close</span>
   <img id="lb-img" src="" alt="foto" />
   <div class="lightbox-actions">
-    <a class="lb-btn primary" id="lb-download" download>↓ downloadr</a>
-    <button class="lb-btn" onclick="closeLightbox()">← volver</button>
+    <a class="lb-btn primary" id="lb-download" download>↓ download</a>
+    <button class="lb-btn" onclick="closeLightbox()">← back</button>
   </div>
 </div>
 
@@ -617,13 +617,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <img src="${photo.src}" alt="" />
           <div class="lock-overlay">
             <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
-            <div class="lock-text">etiquétame<br>para ver</div>
+            <div class="lock-text">tag me<br>para ver</div>
           </div>`;
       } else {
         cell.innerHTML = `
           <div class="lock-inner">
             <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
-            <div class="lock-text">etiquétame<br>para ver</div>
+            <div class="lock-text">tag me<br>para ver</div>
           </div>`;
       }
     }

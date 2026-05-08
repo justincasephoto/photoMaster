@@ -449,24 +449,38 @@
 -->
 <script>
 const SESSION = {
-  name: "Marta",                         // Nombre de la persona
-  date: "06.05.2026",                    // Fecha de la sesión
-  location: "Varsovia, Łazienki",        // Lugar
-  photographer: "@justin.case.photo",           // TU usuario de Instagram
-  ig_url: "https://instagram.com/justin.case.photo",
-  phone_blik: "+48 514 625 902",         // Tu número para BLIK
-  tally_form_url: "https://tally.so/r/rj2ZbN", // URL de tu form Tally (Faces of Kraków)
+  name: "Krzysztof",
+  date: "30.04.2026",
+  location: "Kraków, Birthday Party",
+  photographer: "@justincasephoto",
+  ig_url: "https://instagram.com/justincasephoto",
+  phone_blik: "+48 XXX XXX XXX",
+  tally_form_url: "https://tally.so/r/rj2ZbN",
   photos: [
-    // FOTOS DESBLOQUEADAS: URL directa de Google Drive (ver README para obtenerla)
-    { id: 1, unlocked: true,  src: "https://drive.google.com/uc?export=view&id=DRIVE_FILE_ID_1", thumb: "https://drive.google.com/uc?export=view&id=DRIVE_FILE_ID_1" },
-    { id: 2, unlocked: true,  src: "https://drive.google.com/uc?export=view&id=DRIVE_FILE_ID_2", thumb: "https://drive.google.com/uc?export=view&id=DRIVE_FILE_ID_2" },
-    // FOTOS BLOQUEADAS: puedes dejar src vacío o con el mismo thumb difuminado
-    { id: 3, unlocked: false, src: "", thumb: "" },
-    { id: 4, unlocked: false, src: "", thumb: "" },
-    { id: 5, unlocked: false, src: "", thumb: "" },
-    { id: 6, unlocked: false, src: "", thumb: "" },
-    { id: 7, unlocked: false, src: "", thumb: "" },
-    { id: 8, unlocked: false, src: "", thumb: "" },
+    { id: 1, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy1.jpg" },
+    { id: 2, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy2.jpg" },
+    { id: 3, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy3.jpg" },
+    { id: 4, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy4.jpg" },
+    { id: 5, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy5.jpg" },
+    { id: 6, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy6.png" },
+    { id: 7, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy7.png" },
+    { id: 8, unlocked: true, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy8.png" },
+    { id: 9, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy9.png" },
+    { id: 10, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy10.png" },
+    { id: 11, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy11.jpg" },
+    { id: 12, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy12.jpg" },
+    { id: 13, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy13.jpg" },
+    { id: 14, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy14.jpg" },
+    { id: 15, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy15.jpg" },
+    { id: 16, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy16.jpg" },
+    { id: 17, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy17.jpg" },
+    { id: 18, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy18.jpg" },
+    { id: 19, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy19.jpg" },
+    { id: 20, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy20.jpg" },
+    { id: 21, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy21.jpg" },
+    { id: 22, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy22.jpg" },
+    { id: 23, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy23.jpg" },
+    { id: 24, unlocked: false, src: "/sessions/krzysztof-birthday-2026/photos/BirthdayBoy24.png" }
   ]
 };
 </script>
@@ -474,8 +488,8 @@ const SESSION = {
 <!-- HERO -->
 <div class="hero">
   <div class="hero-meta fade" id="hero-meta"></div>
-  <h1 class="hero-title fade"><span id="hero-name"></span>,<br><em>esto es para ti.</em></h1>
-  <p class="hero-sub fade">fotografía callejera · un momento en la ciudad</p>
+  <h1 class="hero-title fade"><span id="hero-name"></span>,<br><em>this is for you.</em></h1>
+  <p class="hero-sub fade">photography callejera · a moment in the city</p>
   <a class="ig-pill fade" id="ig-link" target="_blank" rel="noopener">
     <span class="ig-dot"></span>
     <span id="ig-handle"></span>
@@ -484,9 +498,9 @@ const SESSION = {
 
 <!-- TABS -->
 <div class="tabs fade">
-  <div class="tab active" data-tab="gallery">galería</div>
-  <div class="tab" data-tab="unlock">desbloquear</div>
-  <div class="tab" data-tab="donate">apoyar</div>
+  <div class="tab active" data-tab="gallery">gallery</div>
+  <div class="tab" data-tab="unlock">unlock</div>
+  <div class="tab" data-tab="donate">support</div>
 </div>
 
 <!-- ── PANEL: GALERÍA ── -->
@@ -501,20 +515,20 @@ const SESSION = {
 <!-- ── PANEL: DESBLOQUEAR ── -->
 <div class="panel" id="panel-unlock">
   <div class="unlock-block">
-    <h2 class="panel-title">Desbloquea todas<br><em>tus fotos.</em></h2>
-    <p class="panel-body">Tres pasos. Sin registro. Sin costo. Solo un momento en tu historia.</p>
+    <h2 class="panel-title">Unlock all<br><em>your photos.</em></h2>
+    <p class="panel-body">Three steps. No signup. No cost. Just a moment on your story.</p>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <div class="step-text"><strong>Descarga</strong> una de las fotos disponibles en la galería. Toca la foto y pulsa "descargar".</div>
+        <div class="step-text"><strong>Download</strong> una de las fotos available en la gallery. Toca la foto y pulsa "downloadr".</div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <div class="step-text"><strong>Publícala</strong> en tu historia de Instagram. Etiqueta <strong id="unlock-ig"></strong>.</div>
+        <div class="step-text"><strong>Post it</strong> on your Instagram story. Tag <strong id="unlock-ig"></strong>.</div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-text"><strong>Pega el link</strong> de tu historia aquí abajo. En minutos recibes acceso al resto.</div>
+        <div class="step-text"><strong>Paste the link</strong> of your story here. You will get access to the rest in minutes.</div>
       </div>
     </div>
     <!-- Tally form embebido -->
@@ -532,18 +546,18 @@ const SESSION = {
 <!-- ── PANEL: DONAR ── -->
 <div class="panel" id="panel-donate">
   <div class="donate-block">
-    <h2 class="panel-title">Si te gustó<br><em>el trabajo.</em></h2>
-    <p class="panel-body">La fotografía callejera es un trabajo independiente. Una donación voluntaria me permite seguir en la calle con la cámara. Cualquier cantidad es bienvenida, ninguna es obligatoria.</p>
+    <h2 class="panel-title">If you liked<br><em>the work.</em></h2>
+    <p class="panel-body">Street photography is independent work. A voluntary donation allows me to continue on the street with my camera. Any amount is welcome, none is mandatory.</p>
     <div class="blik-card">
       <div class="blik-left">
-        <div class="blik-label">donación por blik · polonia</div>
+        <div class="blik-label">donation via blik · polonia</div>
         <div class="blik-number" id="blik-number"></div>
       </div>
       <div class="blik-badge">blik</div>
     </div>
   </div>
   <div class="donate-note">
-    Una donación + etiqueta en tu historia te da acceso a <strong>todas las fotos</strong> de tu sesión. Gracias por apoyar el trabajo independiente.
+    A donation + tag on your story gives you access to <strong>all photos</strong> de tu sesión. Gracias por support the work independiente.
   </div>
 </div>
 
@@ -558,7 +572,7 @@ const SESSION = {
   <span class="lb-close" onclick="closeLightbox()">✕ cerrar</span>
   <img id="lb-img" src="" alt="foto" />
   <div class="lightbox-actions">
-    <a class="lb-btn primary" id="lb-download" download>↓ descargar</a>
+    <a class="lb-btn primary" id="lb-download" download>↓ downloadr</a>
     <button class="lb-btn" onclick="closeLightbox()">← volver</button>
   </div>
 </div>
@@ -570,20 +584,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const unlockedCount = S.photos.filter(p => p.unlocked).length;
 
   // Hero
-  document.getElementById('hero-meta').textContent = `foto compartida · ${S.date} · ${S.location}`;
+  document.getElementById('hero-meta').textContent = `shared photo · ${S.date} · ${S.location}`;
   document.getElementById('hero-name').textContent = S.name;
   document.getElementById('ig-link').href = S.ig_url;
   document.getElementById('ig-link').querySelector('span:last-child').textContent = S.photographer;
 
   // Gallery label
   document.getElementById('gallery-label').textContent =
-    `tus fotos — ${unlockedCount} de ${S.photos.length} disponibles`;
+    `your photos — ${unlockedCount} de ${S.photos.length} available`;
 
   // Footer refs
   document.getElementById('footer-ig').textContent = S.photographer;
   document.getElementById('unlock-ig').textContent = S.photographer;
   document.getElementById('blik-number').textContent = S.phone_blik;
-  document.getElementById('footer-sig').textContent = `fotografía · ${S.photographer}`;
+  document.getElementById('footer-sig').textContent = `photography · ${S.photographer}`;
   document.getElementById('footer-year').textContent = new Date().getFullYear();
 
   // Gallery grid
@@ -594,13 +608,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (photo.unlocked) {
       cell.innerHTML = `
-        <img src="${photo.thumb}" alt="foto ${i+1}" loading="lazy" />
+        <img src="${photo.src}" alt="foto ${i+1}" loading="lazy" />
         <div class="dl-badge">↓ ver</div>`;
       cell.addEventListener('click', () => openLightbox(photo.src, `foto-${S.name.toLowerCase()}-${i+1}.jpg`));
     } else {
-      if (photo.thumb) {
+      if (photo.src) {
         cell.innerHTML = `
-          <img src="${photo.thumb}" alt="" />
+          <img src="${photo.src}" alt="" />
           <div class="lock-overlay">
             <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
             <div class="lock-text">etiquétame<br>para ver</div>
@@ -630,7 +644,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // ── LOAD TALLY IFRAME ──
-// El iframe se carga solo cuando el usuario abre el tab "desbloquear",
+// El iframe se carga solo cuando el usuario abre el tab "unlock",
 // para evitar peticiones innecesarias al inicio.
 function loadTallyIframe() {
   const iframe = document.getElementById('tally-iframe');
