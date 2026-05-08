@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your photos · @justin.case.photo</title>
+  <meta property="og:title" content="Your Birthday Party - 2026" />
+  <meta property="og:description" content="Hope you like them! They are yours!" />
+  <meta property="og:image" content="assets/og-preview.jpg" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --bg2: #101010;
+      --bg3: #161616;
+      --line: #1e1e1e;
+      --line2: #282828;
+      --text: #e8e2d9;
+      --muted: #555;
+      --dim: #333;
+      --accent: #d4c9bc;
+      --white: #f5f0ea;
+      --ig: #c8a97a;
+    }
+
+    html { background: var(--bg); }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── FADE IN ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+    .fade:nth-child(1) { animation-delay: 0.05s; }
+    .fade:nth-child(2) { animation-delay: 0.15s; }
+    .fade:nth-child(3) { animation-delay: 0.25s; }
+    .fade:nth-child(4) { animation-delay: 0.35s; }
+    .fade:nth-child(5) { animation-delay: 0.45s; }
+    .fade:nth-child(6) { animation-delay: 0.55s; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 2rem 1.5rem 1.5rem;
+      border-bottom: 0.5px solid var(--line);
+    }
+    .hero-meta {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 46px;
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+    .hero-title em { font-style: italic; color: var(--ig); }
+    .hero-sub {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 1.6rem;
+      line-height: 1.6;
+    }
+    .ig-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--bg3);
+      border: 0.5px solid var(--line2);
+      border-radius: 24px;
+      padding: 7px 16px;
+      font-size: 11px;
+      color: var(--accent);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .ig-pill:hover { border-color: var(--dim); color: var(--white); }
+    .ig-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      flex-shrink: 0;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      border-bottom: 0.5px solid var(--line);
+      padding: 0 1.5rem;
+      gap: 1.75rem;
+    }
+    .tab {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      user-select: none;
+    }
+    .tab.active { color: var(--text); border-bottom-color: var(--text); }
+    .tab:hover:not(.active) { color: #777; }
+
+    /* ── PANEL ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── GALLERY ── */
+    .gallery-label {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 1.25rem 1.5rem 0.75rem;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      padding: 0 2px 2px;
+    }
+    .photo-cell {
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg2);
+    }
+
+    /* UNLOCKED */
+    .photo-cell.unlocked {
+      cursor: pointer;
+    }
+    .photo-cell.unlocked img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .photo-cell.unlocked:hover img { transform: scale(1.04); }
+    .photo-cell.unlocked .dl-badge {
+      position: absolute;
+      bottom: 8px; right: 8px;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      background: rgba(232,226,217,0.9);
+      color: #000;
+      padding: 3px 9px;
+      border-radius: 10px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .photo-cell.unlocked:hover .dl-badge { opacity: 1; }
+
+    /* LOCKED */
+    .photo-cell.locked .lock-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 7px;
+      background: repeating-linear-gradient(
+        -45deg,
+        #0e0e0e 0px, #0e0e0e 4px,
+        #0a0a0a 4px, #0a0a0a 8px
+      );
+    }
+    .photo-cell.locked img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: blur(18px) brightness(0.25);
+      transform: scale(1.1);
+    }
+    .photo-cell.locked .lock-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .lock-icon { font-size: 16px; color: var(--dim); }
+    .lock-text {
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      text-transform: uppercase;
+      text-align: center;
+      padding: 0 10px;
+      line-height: 1.4;
+    }
+
+    .gallery-footer {
+      padding: 1.4rem 1.5rem 1.75rem;
+      border-top: 0.5px solid var(--line);
+    }
+    .gallery-footer p {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.7;
+      border-left: 1px solid var(--line2);
+      padding-left: 12px;
+    }
+    .gallery-footer strong { color: var(--ig); font-weight: 400; }
+
+    /* ── UNLOCK PANEL ── */
+    .unlock-block {
+      padding: 1.75rem 1.5rem;
+    }
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .panel-title em { font-style: italic; color: var(--ig); }
+    .panel-body {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    .steps { display: flex; flex-direction: column; gap: 14px; margin-bottom: 1.75rem; }
+    .step { display: flex; gap: 14px; align-items: flex-start; }
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--dim);
+      line-height: 1;
+      min-width: 18px;
+    }
+    .step-text { font-size: 10px; color: #777; line-height: 1.6; padding-top: 5px; }
+    .step-text strong { color: var(--accent); font-weight: 400; }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .story-input {
+      flex: 1;
+      background: var(--bg3);
+      border: 0.5px solid var(--line2);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 11px 13px;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .story-input::placeholder { color: var(--dim); }
+    .story-input:focus { border-color: var(--muted); }
+    .btn-send {
+      background: var(--white);
+      border: none;
+      color: #000;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      padding: 11px 15px;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .btn-send:hover { background: #fff; }
+    .success-msg {
+      font-size: 10px;
+      color: #5a9a6a;
+      line-height: 1.6;
+      display: none;
+      padding: 8px 0;
+    }
+    .error-msg {
+      font-size: 10px;
+      color: #a05a5a;
+      line-height: 1.6;
+      display: none;
+      padding: 8px 0;
+    }
+
+
+    /* ── TALLY EMBED ── */
+    .tally-wrap {
+      margin-top: 1.5rem;
+      background: var(--bg3);
+      border: 0.5px solid var(--line2);
+      border-radius: 3px;
+      padding: 8px;
+      min-height: 380px;
+    }
+    .tally-wrap iframe {
+      width: 100%;
+      height: 380px;
+      border: none;
+      background: transparent;
+      display: block;
+    }
+    /* ── DONATE PANEL ── */
+    .donate-block {
+      padding: 1.75rem 1.5rem 1rem;
+      border-bottom: 0.5px solid var(--line);
+    }
+    .blik-card {
+      background: var(--bg3);
+      border: 0.5px solid var(--line2);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .blik-left { flex: 1; }
+    .blik-label { font-size: 9px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+    .blik-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .blik-badge {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: #000;
+      background: var(--white);
+      padding: 5px 12px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+    .donate-note {
+      padding: 1.25rem 1.5rem 1.75rem;
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.7;
+      border-left: 1px solid var(--line2);
+      margin: 1rem 1.5rem 0;
+    }
+    .donate-note strong { color: var(--accent); font-weight: 400; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 0.5px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-sig {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
+    .footer-copy {
+      font-size: 9px;
+      color: var(--dim);
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      padding: 1.5rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 75vh;
+      object-fit: contain;
+      border-radius: 2px;
+    }
+    .lightbox-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .lb-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: 10px 18px;
+      border-radius: 2px;
+      cursor: pointer;
+      border: 0.5px solid var(--line2);
+      background: transparent;
+      color: var(--accent);
+      transition: border-color 0.2s;
+    }
+    .lb-btn:hover { border-color: var(--muted); }
+    .lb-btn.primary { background: var(--white); color: #000; border-color: var(--white); }
+    .lb-btn.primary:hover { background: #fff; }
+    .lb-close {
+      position: absolute;
+      top: 1rem; right: 1.25rem;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════╗
+     ║  CONFIGURACIÓN DE SESIÓN    ║
+     ╚══════════════════════════════╝
+  Edita estos datos para cada persona.
+  Luego duplica el archivo en su carpeta.
+-->
+<script>
+const SESSION = {
+  name: "Krzysztof Górkiewicz",                         // Nombre de la persona
+  date: "30.04.2026",                    // Fecha de la sesión
+  location: "Cafe Szafe, Kraków",        // Lugar
+  photographer: "@justin.case.photo",           // TU usuario de Instagram
+  ig_url: "https://instagram.com/justin.case.photo",
+  phone_blik: "+48 514 625 902",         // Tu número para BLIK
+  tally_form_url: "https://tally.so/r/rj2ZbN", // URL de tu form Tally (Faces of Kraków)
+  photos: [
+    { id: 1, unlocked: true, src: "https://drive.google.com/uc?export=view&id=16UjeiNnp6h_cZG6DObOBijaMMI6yRTyS" },
+    { id: 2, unlocked: true, src: "https://drive.google.com/uc?export=view&id=1WAKV4dXzSqd9cpa1qOU9b7N1w3-00EYV" },
+    { id: 3, unlocked: true, src: "https://drive.google.com/uc?export=view&id=15deqf-TqM53Ua0nu7U5--QUjFE4t6_UY" },
+    { id: 4, unlocked: true, src: "https://drive.google.com/uc?export=view&id=1JSoIVMwX-1Hrvv5pfT9CHCUIUPv-5tPG" },
+    { id: 5, unlocked: true, src: "https://drive.google.com/uc?export=view&id=1_nbAYlzM_J74VWDuXCTGDJ5h7otR-nkd" },
+    { id: 6, unlocked: true, src: "https://drive.google.com/uc?export=view&id=1MFXvrkrvk-fHAjhHxYRrDe9FJnfXBydY" },
+    { id: 7, unlocked: true, src: "https://drive.google.com/uc?export=view&id=1IcW7A525FNm_XAoK77k1-J88ohi4z4Gd" },
+    { id: 8, unlocked: true, src: "https://drive.google.com/uc?export=view&id=1drFI3W-PeF_1Wb0mmuuBMtJ2LQGIcmB1" },
+    { id: 9, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1Ss4VWmgiWejL3rbrjUikcBPZ5wtMn2Px" },
+    { id: 10, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1iMjnsQoIYwdKdWgGWH_hWFwZ2UGXA9Ya" },
+    { id: 11, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1RScyhnQ_pmBZ2h6C5VzqHUtLdVrQbnxJ" },
+    { id: 12, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1DOrt19R1fbbtlGGMUKH8ONHuLWQ5QmHo" },
+    { id: 13, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1WO_4N7lX5sX6zZvRDPgCZS5O8nolNVS1" },
+    { id: 14, unlocked: false, src: "https://drive.google.com/uc?export=view&id=13g2yxDB7VsqDTEq8IvJSYNltizqdwkTf" },
+    { id: 15, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1IPoYpudOfDAOYvLKrYqAQa47CgTPbsqx" },
+    { id: 16, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1juuLm4XDDMKHxh4fHIc7TqIIRrHpUxif" },
+    { id: 17, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1J0YUngxjo3NjeDkGQy6k13tKNRWYK0i2" },
+    { id: 18, unlocked: false, src: "https://drive.google.com/uc?export=view&id=195VJzL3orEk9gLtz2bLArFwQHvqqqdEj" },
+    { id: 19, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1SIon9rnoVFXgSCwJYKeUe3JkxNGPmkuU" },
+    { id: 20, unlocked: false, src: "https://drive.google.com/uc?export=view&id=18YzZLzn2epEbQHS_D2FALfriPpMQt4u7" },
+    { id: 21, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1tebNEaZoGgq6xoG98_eGSMaPWADx4mYh" },
+    { id: 22, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1e-8wUWdgoOW4Nc6GrQBOdB7rlVYrd6jK" },
+    { id: 23, unlocked: false, src: "https://drive.google.com/uc?export=view&id=102b-eToW18FawjnS8CdbbZFRB0O-zdN9" },
+    { id: 24, unlocked: false, src: "https://drive.google.com/uc?export=view&id=1H-U3ZYEqYFG9IdbufbVFOlORdzlJ4Rx-" }
+  ]
+};
+</script>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-meta fade" id="hero-meta"></div>
+  <h1 class="hero-title fade"><span id="hero-name"></span>,<br><em>This is for you.</em></h1>
+  <p class="hero-sub fade">Birthday Boy 2026</p>
+  <a class="ig-pill fade" id="ig-link" target="_blank" rel="noopener">
+    <span class="ig-dot"></span>
+    <span id="ig-handle"></span>
+  </a>
+</div>
+
+<!-- TABS -->
+<div class="tabs fade">
+  <div class="tab active" data-tab="gallery">Gallery</div>
+  <div class="tab" data-tab="unlock">Unblock</div>
+  <div class="tab" data-tab="donate">Support</div>
+</div>
+
+<!-- ── PANEL: GALERÍA ── -->
+<div class="panel active" id="panel-gallery">
+  <div class="gallery-label" id="gallery-label"></div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+  <div class="gallery-footer">
+    <p>Did you like them? Make a story with them, tag <strong id="footer-ig"></strong> and unblock the rest. No cost, just a tag.</p>
+  </div>
+</div>
+
+<!-- ── PANEL: DESBLOQUEAR ── -->
+<div class="panel" id="panel-unlock">
+  <div class="unlock-block">
+    <h2 class="panel-title">Unblock all <br><em>your photos.</em></h2>
+    <p class="panel-body">3 steps. NO registration. No cost. Just a moment in your story.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Download</strong> one of the photos available in the gallery. Tap the photo and press "download".</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Post it</strong> in your story on Instagram. Tag <strong id="unlock-ig"></strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Paste the link</strong> to your story down here. In just minutes you'll get access to the rest.</div>
+      </div>
+    </div>
+    <!-- Tally form embebido -->
+    <div class="tally-wrap">
+      <iframe id="tally-iframe"
+        src=""
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Share your story"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: DONAR ── -->
+<div class="panel" id="panel-donate">
+  <div class="donate-block">
+    <h2 class="panel-title">If you liked<br><em>my work.</em></h2>
+    <p class="panel-body">I'm an independent photographer. Any voluntary donation will allow me to continue making cool shots. Any amount is welcome :).</p>
+    <div class="blik-card">
+      <div class="blik-left">
+        <div class="blik-label">Via blik</div>
+        <div class="blik-number" id="blik-number"></div>
+      </div>
+      <div class="blik-badge">blik</div>
+    </div>
+  </div>
+  <div class="donate-note">
+    A donation + a tag in your story gives you access to <strong>all your photos</strong>. Thanks for supporting my work!.
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <span class="footer-sig" id="footer-sig"></span>
+  <span class="footer-copy">© <span id="footer-year"></span></span>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <span class="lb-close" onclick="closeLightbox()">✕ Close</span>
+  <img id="lb-img" src="" alt="foto" />
+  <div class="lightbox-actions">
+    <a class="lb-btn primary" id="lb-download" download>↓ Download</a>
+    <button class="lb-btn" onclick="closeLightbox()">← Go back</button>
+  </div>
+</div>
+
+<script>
+// ── RENDER ──
+document.addEventListener('DOMContentLoaded', () => {
+  const S = SESSION;
+  const unlockedCount = S.photos.filter(p => p.unlocked).length;
+
+  // Hero
+  document.getElementById('hero-meta').textContent = `foto compartida · ${S.date} · ${S.location}`;
+  document.getElementById('hero-name').textContent = S.name;
+  document.getElementById('ig-link').href = S.ig_url;
+  document.getElementById('ig-link').querySelector('span:last-child').textContent = S.photographer;
+
+  // Gallery label
+  document.getElementById('gallery-label').textContent =
+    `tus fotos — ${unlockedCount} de ${S.photos.length} disponibles`;
+
+  // Footer refs
+  document.getElementById('footer-ig').textContent = S.photographer;
+  document.getElementById('unlock-ig').textContent = S.photographer;
+  document.getElementById('blik-number').textContent = S.phone_blik;
+  document.getElementById('footer-sig').textContent = `fotografía · ${S.photographer}`;
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // Gallery grid
+  const grid = document.getElementById('gallery-grid');
+  S.photos.forEach((photo, i) => {
+    const cell = document.createElement('div');
+    cell.className = `photo-cell ${photo.unlocked ? 'unlocked' : 'locked'}`;
+
+    if (photo.unlocked) {
+      cell.innerHTML = `
+        <img src="${photo.thumb}" alt="foto ${i+1}" loading="lazy" />
+        <div class="dl-badge">↓ See</div>`;
+      cell.addEventListener('click', () => openLightbox(photo.src, `foto-${S.name.toLowerCase()}-${i+1}.jpg`));
+    } else {
+      if (photo.thumb) {
+        cell.innerHTML = `
+          <img src="${photo.thumb}" alt="" />
+          <div class="lock-overlay">
+            <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <div class="lock-text">tag me<br>to see</div>
+          </div>`;
+      } else {
+        cell.innerHTML = `
+          <div class="lock-inner">
+            <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <div class="lock-text">tag me<br>to see</div>
+          </div>`;
+      }
+    }
+    grid.appendChild(cell);
+  });
+});
+
+// ── TABS ──
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    // Cargar iframe Tally solo cuando se abre el tab "unlock"
+    if (tab.dataset.tab === 'unlock') loadTallyIframe();
+  });
+});
+
+// ── LOAD TALLY IFRAME ──
+// El iframe se carga solo cuando el usuario abre el tab "desbloquear",
+// para evitar peticiones innecesarias al inicio.
+function loadTallyIframe() {
+  const iframe = document.getElementById('tally-iframe');
+  if (!iframe || iframe.dataset.loaded === 'true') return;
+
+  // Convertir URL de tally.so/r/XXX a tally.so/embed/XXX
+  const baseUrl = SESSION.tally_form_url.replace('/r/', '/embed/');
+
+  // Pre-llenar campos via URL parameters (Tally hidden fields)
+  const params = new URLSearchParams({
+    photographer: SESSION.photographer,
+    session_name: SESSION.name,
+    session_date: SESSION.date,
+    session_location: SESSION.location,
+    alignLeft: '1',
+    hideTitle: '1',
+    transparentBackground: '1',
+    dynamicHeight: '1'
+  });
+
+  iframe.src = `${baseUrl}?${params.toString()}`;
+  iframe.dataset.loaded = 'true';
+}
+
+// ── LIGHTBOX ──
+function openLightbox(src, filename) {
+  if (!src) return;
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-download').href = src;
+  document.getElementById('lb-download').download = filename;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+</script>
+
+<!-- Tally embed auto-resize script -->
+<script async src="https://tally.so/widgets/embed.js"></script>
+</body>
+</html>
