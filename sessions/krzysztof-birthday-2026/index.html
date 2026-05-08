@@ -608,13 +608,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (photo.unlocked) {
       cell.innerHTML = `
-        <img src="${photo.thumb}" alt="foto ${i+1}" loading="lazy" />
+        <img src="${photo.src}" alt="foto ${i+1}" loading="lazy" />
         <div class="dl-badge">↓ ver</div>`;
       cell.addEventListener('click', () => openLightbox(photo.src, `foto-${S.name.toLowerCase()}-${i+1}.jpg`));
     } else {
-      if (photo.thumb) {
+      if (photo.src) {
         cell.innerHTML = `
-          <img src="${photo.thumb}" alt="" />
+          <img src="${photo.src}" alt="" />
           <div class="lock-overlay">
             <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
             <div class="lock-text">etiquétame<br>para ver</div>
